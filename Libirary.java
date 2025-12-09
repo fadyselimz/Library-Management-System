@@ -15,12 +15,15 @@ public class Libirary {
         }
         return null;
     }
-    public static Book[] searchGenre(genre:Genre){}
+
+    public static String searchBook(int id){}
+    public static Book[] searchGenre(Genre genre){}
     public static Book[] searchAuthor(String author){}
-    public static Book[] searchPublishHouse(publishHouse : String){}
-    public static String viewBook(title : String ){}
-    public static String viewBook(Id : int){}
-    public static Boolean checkBook(title : String){} 
-    public static Boolean checkBook(Id : int ){}
+    public static Book[] searchPublishHouse(String publishHouse){}
+    public static String viewBook(String title ){}
+    public static Boolean checkBook(String title){} 
+    public static Boolean checkBook(int id ){}
+
+    
 
 }

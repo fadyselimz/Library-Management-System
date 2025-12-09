@@ -1,7 +1,4 @@
-package pl_project;
-
 import java.util.*;
-import javax.security.sasl.Sasl;
 
 public class Book {
     private String bookName;
@@ -13,17 +10,17 @@ public class Book {
     private int bookId;
 
     public Book() {
-        this("bookName", "publishingHouse", "autherName",new Date(), "genra", "bookDiscription", 0);
+        this("bookName", "publishingHouse", "autherName",new Date(), "genre", "bookDiscription", 0);
     }
 
     
 
-    public Book(String bookName, String publishingHouse, String autherName, Date dateOfPublication, String genra, String bookDiscription, int bookId) {
+    public Book(String bookName, String publishingHouse, String autherName, Date dateOfPublication, String genre, String bookDiscription, int bookId) {
         this.bookName = bookName;
         this.publishingHouse = publishingHouse;
         this.autherName = autherName;
         this.dateOfPublication = dateOfPublication;
-        this.genra = genra;
+        this.genre = genre;
         this.bookDiscription = bookDiscription;
         this.bookId = bookId;
     }
