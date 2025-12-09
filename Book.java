@@ -60,7 +60,7 @@ public class Book {
     public void setBookDiscription(String bookDiscription){
         this.bookDiscription=bookDiscription;
     }
-    public String getbookDiscription(){
+    public String getBookDiscription(){
         return bookDiscription;
     }
     public void setBookId(int bookId){
