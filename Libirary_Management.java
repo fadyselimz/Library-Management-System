@@ -7,8 +7,6 @@ public class Libirary_Management {
     public Libirary_Management() {
     }
 
-    
-
     public static  void addBook(Book book) throws IOException {
         PrintWriter writer = new PrintWriter(new FileWriter(file, true));
         writer.println( book.getbookId()+","+book.getBookName() + "," + book.getPublishingHouse() + "," + book.getAuther() + "," + book.getDateOfPublication() + "," + book.getGenre() + "," + book.getBookDiscription() );
@@ -19,6 +17,7 @@ public class Libirary_Management {
     public static Book searchBook(String title) throws FileNotFoundException {
         Scanner scan = new Scanner(file);
         Book book = new Book();
+        file.length();
         while(scan.hasNextLine()){
             if (scan.nextLine().contains(title)){
             
