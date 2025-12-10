@@ -9,6 +9,7 @@ public class Book {
     private String bookDiscription;
     private int bookId;
     private static int counter=1;
+    private BookStatus status;
 
     public Book() {
     }
@@ -69,5 +70,8 @@ public class Book {
     }
     public int getbookId(){
         return bookId;
+    }
+    public BookStatus getStatus() {
+        return status;
     }
 }
