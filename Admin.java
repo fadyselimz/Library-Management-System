@@ -12,7 +12,7 @@ public class Admin extends User {
       for (int i = 0; i <= User.getCounter(); i++) {
         if (id == super.getId()) {
             System.out.println("User found: " + super.getUsername());
-            return User;
+            return null;
         }
       }
         System.out.println("User not found");

@@ -5,7 +5,7 @@ public class Book {
     private String publishingHouse;
     private String autherName;
     private Date dateOfPublication=new Date() ;
-    private String genre;
+    private Genre  genre;
     private String bookDiscription;
     private int bookId;
     private static int counter=1;
@@ -15,7 +15,7 @@ public class Book {
 
     
 
-    public Book(String bookName, String publishingHouse, String autherName, Date dateOfPublication, String genre, String bookDiscription) {
+    public Book(String bookName, String publishingHouse, String autherName, Date dateOfPublication, Genre genre, String bookDiscription) {
         this.bookName = bookName;
         this.publishingHouse = publishingHouse;
         this.autherName = autherName;
@@ -52,10 +52,10 @@ public class Book {
     public Date getDateOfPublication(){
         return dateOfPublication;
     }
-    public void setGenre(String genre){
+    public void setGenre(Genre genre){
         this.genre=genre;
     }
-    public String getGenre(){
+    public Genre getGenre(){
         return genre;
     }
     public void setBookDiscription(String bookDiscription){
