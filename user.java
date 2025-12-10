@@ -4,7 +4,7 @@ public class User{
     private String username;
     private String password;
     private int id ;
-    private  static int counter=getInitialCounter;
+    private  static int counter=getInitialCounter();
     private  static int numOfUsers=0;
     private boolean loginstatus=false;
 
