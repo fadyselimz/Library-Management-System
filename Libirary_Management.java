@@ -4,15 +4,24 @@ import java.io.*;
 public class Libirary_Management {
     private static final  File file = new File("Library.csv");
 
-    public static void addBook(Book book) throws IOException {
-        PrintWriter writer = new PrintWriter(new FileWriter(file, true));
-        writer.println(book.getBookName() + "," + book.getPublishingHouse() + "," + book.getAuther() + "," + book.getDateOfPublication() + "," + book.getGenre() + "," + book.getBookDiscription() + "," + book.getbookId());
-        writer.close();
+    public Libirary_Management() {
     }
 
-    public static Book searchBook(String title){
-        for (Book book : books) {
-            if (book.getBookName().equalsIgnoreCase(title)) {
+    
+
+    public static  void addBook(Book book) throws IOException {
+        PrintWriter writer = new PrintWriter(new FileWriter(file, true));
+        writer.println( book.getbookId()+","+book.getBookName() + "," + book.getPublishingHouse() + "," + book.getAuther() + "," + book.getDateOfPublication() + "," + book.getGenre() + "," + book.getBookDiscription() );
+        writer.close();
+        System.out.println("Book added to the library successfully.");
+    }
+
+    public static Book searchBook(String title) throws FileNotFoundException {
+        Scanner scan = new Scanner(file);
+        Book book = new Book();
+        while(scan.hasNextLine()){
+            if (scan.nextLine().contains(title)){
+            
                 return book;
             }
         }

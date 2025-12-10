@@ -1,16 +1,19 @@
 import java.util.*;
 
-public class user {
-    protected String username;
-    protected String password;
-    protected int id = 100;
+public class User{
+    private String username;
+    private String password;
+    private int id ;
+    private  static int counter=1;
+    private  static int numOfUsers=0;
+    private boolean loginstatus=false;
 
-    public user() {
+    public User() {
     }
 
-    public user(String username, String password) {
+    public User(String username, String password) {
         this.username = username;
-        this.password = password;
+        this.password = password; 
     }
 
     public String getUsername() {
@@ -33,38 +36,70 @@ public class user {
         return id;
     }
 
+    public void setId(int ID) {
+         id= ID;
+    }
+
+    public static  int getCounter() {
+        return counter;
+    }
+    public static void  setCounter(int Counter) {
+        counter = Counter;
+    }
+
+
+    public static int getNumOfUsers() {
+        return numOfUsers;
+    }
+
+      public static void setNumOfUsers(int NumOfUsers) {
+         numOfUsers= NumOfUsers;
+    }
+
     public void CreateAccount(String username, String password) {
         this.username = username;
         this.password = password;
-        this.id++;
+        this.id=counter;
+        counter++;
+        numOfUsers++;
     }
 
     public void login() {
-        user user1 = new user(this.username, this.password);
+        if(this.loginstatus){
+            System.out.println("You are already logged in");
+            return;
+        }
+        User user1 = new User(this.username, this.password);
         Scanner sc = new Scanner(System.in);
         System.out.println("Enter username:");
         String uname = sc.nextLine();
         System.out.println("Enter password:");
         String pass = sc.nextLine();
-        if (uname.equals(user1.getUsername()) && pass.equals(user1.getPassword())) {
+        if (uname.equals(user1.username) && pass.equals(user1.password)) {
             System.out.println("Login successful");
+            this.loginstatus=true;
         } else {
             System.out.println("Login failed");
         }
     }
 
     public void logout() {
+         if(!this.loginstatus){
+            System.out.println("You are not logged in");
+            return;
+        }
+        this.loginstatus=false;
         System.out.println("User logged out successfully");
     }
 
     public void updateAccount(String newUsername, String newPassword) {
-        user user1 = new user(this.username, this.password);
+        User user1 = new User(this.username, this.password);
         Scanner sc = new Scanner(System.in);
         System.out.println("Enter username:");
         String uname = sc.nextLine();
         System.out.println("Enter password:");
         String pass = sc.nextLine();
-        if (uname.equals(user1.getUsername()) && pass.equals(user1.getPassword())) {
+        if (uname.equals(user1.username) && pass.equals(user1.password) && this.loginstatus==true ) {
             this.username = newUsername;
             this.password = newPassword;
             System.out.println("Your Account updated successfully");
@@ -74,16 +109,18 @@ public class user {
     }
 
     public void deleteAccount() {
-        user user1 = new user(this.username, this.password);
+        User user1 = new User(this.username, this.password);
         Scanner sc = new Scanner(System.in);
         System.out.println("Enter username:");
         String uname = sc.nextLine();
         System.out.println("Enter password:");
         String pass = sc.nextLine();
-        if (uname.equals(user1.getUsername()) && pass.equals(user1.getPassword())) {
+        if (uname.equals(user1.username) && pass.equals(user1.password) && this.loginstatus==true) {
             this.username = null;
             this.password = null;
-            this.id--;
+            User.numOfUsers--;
+            this.id=-1;
+            this.loginstatus=false;
             System.out.println("Your Account deleted successfully");
         } else {
             System.out.println("Account deletion failed");
