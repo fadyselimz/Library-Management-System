@@ -1,10 +1,12 @@
+import java.io.FileWriter;
+import java.io.PrintWriter;
 import java.util.*;
 
 public class User{
     private String username;
     private String password;
     private int id ;
-    private  static int counter=getInitialCounter;
+    private  static int counter=getInitialCounter();
     private  static int numOfUsers=0;
     private boolean loginstatus=false;
 
@@ -75,6 +77,24 @@ public class User{
         this.password = password;
         this.id=counter+1;
         numOfUsers++;
+        try {
+            Scanner scan = new Scanner(new java.io.File("Users.csv"));
+            while(scan.hasNextLine()){
+                String line = scan.nextLine();
+                String[] fields = line.split(",");
+                if(fields.length > 0 && fields[0].equals(this.getUsername())){
+                    System.out.println("Username already exists");
+                    scan.close();
+                    return;
+                }
+            }
+            PrintWriter users = new PrintWriter(new FileWriter(new java.io.File("Users.csv"), true));
+            users.println( this.getUsername()+","+this.getPassword()+","+this.getId());
+            users.close();
+            System.out.println("Account created successfully.");
+        } catch (java.io.IOException e) {
+            System.out.println("An error occurred: " + e.getMessage());
+        }
     }
 
     public void login() {

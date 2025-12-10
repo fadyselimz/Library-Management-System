@@ -1,12 +1,13 @@
-import java.util.*;
-import java.io.*;
 
 public class main {
     public static void main(String[] args) {
-        Book book1 = new Book("The", "Scribner", "F. Scott Fitzgerald", new Date(), Genre.ROMANTIC, "A novel set in the Jazz Age");
-        Book book2 = new Book("1984", "Secker & Warburg", "George Orwell", new Date(), Genre.HISTORY, "A novel about totalitarianism");
         try {
-            Libirary_Management.addBook(book1);
+            User user1 = new User();
+            user1.CreateAccount("alice", "password123");
+            User user2 = new User();
+            user2.CreateAccount("bob", "securepass");
+             User user3 = new User();
+            user2.CreateAccount("bbob", "securepass"); 
             // Book book=new Book();
             // book=Libirary_Management.searchBook("1984");
             // System.out.println("Book Found: " + book.getBookName() + " by " + book.getAuther());
