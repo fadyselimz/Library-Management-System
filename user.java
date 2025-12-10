@@ -4,7 +4,7 @@ public class User{
     private String username;
     private String password;
     private int id ;
-    private  static int counter=1;
+    private  static int counter=getInitialCounter;
     private  static int numOfUsers=0;
     private boolean loginstatus=false;
 
@@ -55,12 +55,25 @@ public class User{
       public static void setNumOfUsers(int NumOfUsers) {
          numOfUsers= NumOfUsers;
     }
+     private static int getInitialCounter() {
+        int lines = 0;
+        try {
+            Scanner scan = new Scanner(new java.io.File("Library.csv"));
+            while (scan.hasNextLine()) {
+                scan.nextLine();
+                lines++;
+            }
+            scan.close();
+        } catch (Exception e) {
+
+        }
+        return lines ;
+    }
 
     public void CreateAccount(String username, String password) {
         this.username = username;
         this.password = password;
-        this.id=counter;
-        counter++;
+        this.id=counter+1;
         numOfUsers++;
     }
 

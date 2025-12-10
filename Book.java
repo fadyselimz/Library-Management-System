@@ -4,11 +4,11 @@ public class Book {
     private String bookName;
     private String publishingHouse;
     private String autherName;
-    private Date dateOfPublication=new Date() ;
-    private Genre  genre;
+    private String dateOfPublication ;
+    private String genre;
     private String bookDiscription;
     private int bookId;
-    private static int counter=1;
+    private static int counter = getInitialCounter();
     private BookStatus status;
 
     public Book() {
@@ -20,11 +20,10 @@ public class Book {
         this.bookName = bookName;
         this.publishingHouse = publishingHouse;
         this.autherName = autherName;
-        this.dateOfPublication = dateOfPublication;
-        this.genre = genre;
+        this.dateOfPublication = dateOfPublication.toString();
+        this.genre = genre.toString();
         this.bookDiscription = bookDiscription;
-        this.bookId = counter;
-        counter++;
+        this.bookId = counter+1;
     }
 
     public void setBookName(String bookName){
@@ -47,16 +46,16 @@ public class Book {
     public String getAuther(){
        return autherName; 
     }
-    public void setDateOfPublishing(Date dateOfPublication){
+    public void setDateOfPublication(String dateOfPublication){
         this.dateOfPublication=dateOfPublication;
     }
-    public Date getDateOfPublication(){
+    public String getDateOfPublication(){
         return dateOfPublication;
     }
-    public void setGenre(Genre genre){
+    public void setGenre(String genre){
         this.genre=genre;
     }
-    public Genre getGenre(){
+    public String getGenre(){
         return genre;
     }
     public void setBookDiscription(String bookDiscription){
@@ -76,5 +75,20 @@ public class Book {
     }
     public void setStatus(BookStatus status) {
         this.status = status;
+    }
+    
+    private static int getInitialCounter() {
+        int lines = 0;
+        try {
+            Scanner scan = new Scanner(new java.io.File("Library.csv"));
+            while (scan.hasNextLine()) {
+                scan.nextLine();
+                lines++;
+            }
+            scan.close();
+        } catch (Exception e) {
+
+        }
+        return lines ;
     }
 }
