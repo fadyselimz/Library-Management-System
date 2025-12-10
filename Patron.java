@@ -6,7 +6,7 @@ public class Patron extends User {
         if (book.getStatus() == BookStatus.AVAILABLE) {
             book.setStatus(BookStatus.RESERVED);
             return BookStatus.RESERVED;
-        }
+        }else()
         return BookStatus.RESERVED;
     }
 }
