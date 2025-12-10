@@ -8,21 +8,22 @@ public class Book {
     private String genre;
     private String bookDiscription;
     private int bookId;
+    private static int counter=1;
 
     public Book() {
-        this("bookName", "publishingHouse", "autherName",new Date(), "genre", "bookDiscription", 0);
     }
 
     
 
-    public Book(String bookName, String publishingHouse, String autherName, Date dateOfPublication, String genre, String bookDiscription, int bookId) {
+    public Book(String bookName, String publishingHouse, String autherName, Date dateOfPublication, String genre, String bookDiscription) {
         this.bookName = bookName;
         this.publishingHouse = publishingHouse;
         this.autherName = autherName;
         this.dateOfPublication = dateOfPublication;
         this.genre = genre;
         this.bookDiscription = bookDiscription;
-        this.bookId = bookId;
+        this.bookId = counter;
+        counter++;
     }
 
     public void setBookName(String bookName){
