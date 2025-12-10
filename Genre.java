@@ -4,7 +4,7 @@ public enum Genre {
     SCIENCE_FICTION,
     FANTASY,
     MYSTERY,
-    THRILLER,
+    THRILLER,   
     NON_FICTION,
     BIOGRAPHY,
     HISTORY,
