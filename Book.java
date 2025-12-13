@@ -1,5 +1,8 @@
 import java.util.*;
+import java.io.File;
+
 public class Book {
+    private static final File USERS_FILE = new File("books.txt");
     private String bookName;
     private String publishingHouse;
     private String autherName;
@@ -8,7 +11,6 @@ public class Book {
     private String bookDiscription;
     private int bookId;
     private int PatronId;
-    private static int counter = getInitialCounter();
     private BookStatus status;
 
     public Book() {
@@ -23,8 +25,8 @@ public class Book {
         this.dateOfPublication = dateOfPublication.toString();
         this.genre = genre.toString();
         this.bookDiscription = bookDiscription;
-        this.bookId = getNextId();
-        counter = this.bookId;
+        this.bookId = getInitialCounter();
+        this.status = BookStatus.AVAILABLE;
     }
 
     public void setBookName(String bookName){
@@ -86,46 +88,23 @@ public class Book {
     private static int getInitialCounter() {
         int maxId = 0;
         try {
-            java.io.File file = new java.io.File("Library.csv");
-            if (!file.exists()) return 0;
-            Scanner scan = new Scanner(file);
-            while (scan.hasNextLine()) {
-                String line = scan.nextLine();
+            if (!USERS_FILE.exists()) return 1;
+            Scanner sc = new Scanner(USERS_FILE);
+            while (sc.hasNextLine()) {
+                String line = sc.nextLine();
                 String[] fields = line.split(",");
-                if (fields.length >= 1) {
+                if (fields.length >= 3) {
                     try {
-                        int idVal = Integer.parseInt(fields[0].trim());
+                        int idVal = Integer.parseInt(fields[2].trim());
                         if (idVal > maxId) maxId = idVal;
                     } catch (NumberFormatException ignored) { }
                 }
             }
-            scan.close();
-        } catch (Exception e) {
-            System.out.println("ERROR: " + e.getMessage());
-        }
-        return maxId ;
-    }
-
-    private static int getNextId() {
-        int maxId = 0;
-        try {
-            java.io.File file = new java.io.File("Library.csv");
-            if (!file.exists()) return 1;
-            Scanner scan = new Scanner(file);
-            while (scan.hasNextLine()) {
-                String line = scan.nextLine();
-                String[] fields = line.split(",");
-                if (fields.length >= 1) {
-                    try {
-                        int idVal = Integer.parseInt(fields[0].trim());
-                        if (idVal > maxId) maxId = idVal;
-                    } catch (NumberFormatException ignored) { }
-                }
-            }
-            scan.close();
+            sc.close();
         } catch (Exception e) {
             System.out.println("ERROR: " + e.getMessage());
         }
         return maxId + 1;
-    }
+}
+
 }

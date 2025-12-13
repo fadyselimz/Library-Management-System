@@ -16,39 +16,38 @@ public Admin(String username, String password) {
 }
 
 
-public User searchbyID(int id) {
-        try {    
-            if (!USER_FILE.exists()) {
-                System.out.println("User file does not exist.");
-                return null;
-            }
-
-            Scanner sc = new Scanner(USER_FILE);
-            while (sc.hasNextLine()) {
-                String line = sc.nextLine();
-                String[] F = line.split(",");
-                if (F.length >= 3 && Integer.parseInt(F[2]) == id) {
-                    String type = F.length >= 4 ? F[3] : "PATRON";
-                    System.out.println("User found: " + F[0] + ", Password: " + F[1] + " ID: " + F[2] + ", AccountType: " + type);
+public User searchById(int id) {
+    if (!USER_FILE.exists()) {
+        System.out.println("User file does not exist.");
+        return null;
+    }
+    try (Scanner sc = new Scanner(USER_FILE)) {
+        while (sc.hasNextLine()) {
+            String line = sc.nextLine();
+            String[] fields = line.split(",");
+            if (fields.length >= 3) {
+                int userId = Integer.parseInt(fields[2]);
+                if (userId == id) {
+                    String accountType = fields.length >= 4 ? fields[3] : "PATRON";
+                    System.out.println("User found: " + fields[0] + ", Password: " + fields[1] + " ID: " + fields[2] + ", AccountType: " + accountType);
                     User u;
-                    if("ADMIN".equals(type)){
-                        u = new Admin(F[0], F[1]);
-                    } else if("LIBRARIAN".equals(type)){
-                        u = new Librarian(F[0], F[1]);
+                    if("ADMIN".equals(accountType)){
+                        u = new Admin(fields[0], fields[1]);
+                    } else if("LIBRARIAN".equals(accountType)){
+                        u = new Librarian(fields[0], fields[1]);
                     } else {
-                        u = new Patron(F[0], F[1]);
+                        u = new Patron(fields[0], fields[1]);
                     }
-                    u.setId(Integer.parseInt(F[2]));
-                    sc.close();
+                    u.setId(userId);
                     return u;
                 }
             }
-            sc.close();
-            System.out.println("User not found.");
-        } catch (Exception e) {
-            System.out.println("Error: " + e.getMessage());
         }
-        return null;
+        System.out.println("User not found.");
+    } catch (IOException e) {
+        System.out.println("Error: " + e.getMessage());
+    }
+    return null;
 }
 
 
@@ -66,17 +65,17 @@ public void updatebyID(int id) {
 
             while (sc.hasNextLine()) {
                 String line = sc.nextLine();
-                String[] F = line.split(",");
+                String[] fields = line.split(",");
 
-                if (F.length >= 3 && Integer.parseInt(F[2]) == id) {
+                if (fields.length >= 3 && Integer.parseInt(fields[2]) == id) {
                     found = true;
                     Scanner input = new Scanner(System.in);
                     System.out.println("Enter new username:");
                     String newUname = input.nextLine();
                     System.out.println("Enter new password:");
                     String newPass = input.nextLine();
-                    String type = F.length >= 4 ? F[3] : "PATRON";
-                    line = newUname + "," + newPass + "," + F[2] + "," + type; 
+                    String type = fields.length >= 4 ? fields[3] : "PATRON";
+                    line = newUname + "," + newPass + "," + fields[2] + "," + type; 
                     System.out.println("User updated successfully.");
                 }
 
@@ -114,10 +113,10 @@ public void deletebyID(int id) {
 
             while (sc.hasNextLine()) {
                 String line = sc.nextLine();
-                String[] F = line.split(",");
+                String[] fields = line.split(",");
 
-                if (F.length >= 3 && Integer.parseInt(F[2]) == id) {
-                    found = true; // skip this line → delete
+                if (fields.length >= 3 && Integer.parseInt(fields[2]) == id) {
+                    found = true; 
                     continue;
                 }
                 lines.add(line);
@@ -129,7 +128,6 @@ public void deletebyID(int id) {
                 return;
             }
 
-            // Overwrite the file without the deleted user
             PrintWriter pw = new PrintWriter(new FileWriter(file));
             for (String l : lines) pw.println(l);
             pw.close();
@@ -142,106 +140,30 @@ public void deletebyID(int id) {
     }
 
 public void addBook(Book book) {
-        try {
-            File file = BOOK_FILE;
-            if (!file.exists()) file.createNewFile();
-
-            int nextId = getNextBookId();
-            book.setBookId(nextId);
-            PrintWriter pw = new PrintWriter(new FileWriter(file, true));
-            pw.println(nextId + "," + book.getBookName() + "," + book.getPublishingHouse() + "," +
-                       book.getAuther() + "," + book.getDateOfPublication() + "," + book.getGenre() + "," +
-                       book.getBookDiscription());
-            pw.close();
-
-            System.out.println("Book added successfully.");
-
-        } catch (Exception e) {
-            System.out.println("Error adding book: " + e.getMessage());
-        }
+    if (!this.getLoginStatus()) {
+        System.out.println("You must log in first");
+        return;
     }
+    Library_Management.addBook(book);
+}
  
  
  public void removeBookByID(int bookId) {
-        try {
-            File file = BOOK_FILE;
-            if (!file.exists()) {
-                System.out.println("Book file does not exist.");
-                return;
-            }
-
-            Scanner sc = new Scanner(file);
-            List<String> lines = new ArrayList<>();
-            boolean found = false;
-
-            while (sc.hasNextLine()) {
-                String line = sc.nextLine();
-                String[] F = line.split(",");
-
-                if (F.length >= 7 && Integer.parseInt(F[0]) == bookId) {
-                    found = true; 
-                    continue;
-                }
-                lines.add(line);
-            }
-            sc.close();
-
-            if (!found) {
-                System.out.println("Book not found.");
-                return;
-            }
-
-            PrintWriter pw = new PrintWriter(new FileWriter(file));
-            for (String l : lines) pw.println(l);
-            pw.close();
-
-            System.out.println("Book removed successfully.");
-
-        } catch (Exception e) {
-            System.out.println("Error removing book: " + e.getMessage());
+        if(this.getLoginStatus()){
+            Library_Management.removeBookByID(bookId);
+            return;
+        }else{
+            System.out.println("You must log in first");
         }
+       
     }   
 
 public void updateBookByID(int bookId, Book updatedBook) {
-        try {
-            File file = BOOK_FILE;
-            if (!file.exists()) {
-                System.out.println("Book file does not exist.");
-                return;
-            }
-
-            Scanner sc = new Scanner(file);
-            List<String> lines = new ArrayList<>();
-            boolean found = false;
-
-            while (sc.hasNextLine()) {
-                String line = sc.nextLine();
-                String[] F = line.split(",");
-
-                if (F.length >= 7 && Integer.parseInt(F[0]) == bookId) {
-                    found = true;
-                    line = bookId + "," + updatedBook.getBookName() + "," +
-                           updatedBook.getPublishingHouse() + "," + updatedBook.getAuther() + "," +
-                           updatedBook.getDateOfPublication() + "," + updatedBook.getGenre() + "," +
-                           updatedBook.getBookDiscription();
-                }
-                lines.add(line);
-            }
-            sc.close();
-
-            if (!found) {
-                System.out.println("Book not found.");
-                return;
-            }
-
-            PrintWriter pw = new PrintWriter(new FileWriter(file));
-            for (String l : lines) pw.println(l);
-            pw.close();
-
-            System.out.println("Book updated successfully.");
-
-        } catch (Exception e) {
-            System.out.println("Error updating book: " + e.getMessage());
+        if(this.getLoginStatus()){
+            Library_Management.updateBookByID(bookId, updatedBook);
+            return;
+        }else{
+            System.out.println("You must log in first");
         }
     }    
 

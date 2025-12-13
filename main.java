@@ -1,3 +1,4 @@
+import java.util.Date;
 public class main {
     public static void main(String[] args) {
         try {
@@ -15,6 +16,9 @@ public class main {
         librarian1.CreateAccount("sixth", "librarianPass");
         
      patron1.CreateAccount("seventh", "patronPass2");
+     admin1.login();
+     Book book1 = new Book("1984", "Secker & Warburg", "abdo Orwell", new Date(), Genre.ROMANTIC, "A novel about a dystopian future.");
+     admin1.updateBookByID(3, book1);
 
  
 

@@ -4,8 +4,8 @@ public class Patron extends User {
         super();
         this.setAccountType(AccountType.PATRON);
     }
-    public Patron(String name, String password) {
-        super(name, password);
+    public Patron(String username, String password) {
+        super(username, password);
         this.setAccountType(AccountType.PATRON);
     }
     

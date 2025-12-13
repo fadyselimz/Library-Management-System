@@ -4,8 +4,8 @@ public class Librarian extends User{
         super();
         this.setAccountType(AccountType.LIBRARIAN);
     }
-    public Librarian(String userName,String password) {
-        super(userName,password);
+    public Librarian(String username, String password) {
+        super(username, password);
         this.setAccountType(AccountType.LIBRARIAN);
     }
 
