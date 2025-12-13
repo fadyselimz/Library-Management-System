@@ -1,5 +1,4 @@
-import java.io.FileWriter;
-import java.io.PrintWriter;
+import java.io.*;
 import java.util.*;
 
 public class User{
@@ -9,6 +8,7 @@ public class User{
     private  static int counter=getInitialCounter();
     private  static int numOfUsers=0;
     private boolean loginstatus=false;
+    private static final String USER_FILE = "Users.csv";
 
     public User() {
     }
@@ -18,145 +18,196 @@ public class User{
         this.password = password; 
     }
 
-    public String getUsername() {
-        return username;
-    }
+    public String getUsername() { return username; }
+    public void setUsername(String username) {this.username = username;}
 
-    public void setUsername(String username) {
-        this.username = username;
-    }
+    public String getPassword() {return password;}
+    public void setPassword(String password) {this.password = password;}
 
-    public String getPassword() {
-        return password;
-    }
+    public int getId() { return id;}
+    public void setId(int ID) {id= ID;}
 
-    public void setPassword(String password) {
-        this.password = password;
-    }
+    public static  int getCounter() {return counter;}
+    public static void  setCounter(int Counter) {counter = Counter;}
 
-    public int getId() {
-        return id;
-    }
-
-    public void setId(int ID) {
-         id= ID;
-    }
-
-    public static  int getCounter() {
-        return counter;
-    }
-    public static void  setCounter(int Counter) {
-        counter = Counter;
-    }
+    public static int getNumOfUsers() {return numOfUsers;}
+    public static void setNumOfUsers(int NumOfUsers) {numOfUsers= NumOfUsers;}
 
 
-    public static int getNumOfUsers() {
-        return numOfUsers;
-    }
-
-      public static void setNumOfUsers(int NumOfUsers) {
-         numOfUsers= NumOfUsers;
-    }
-     private static int getInitialCounter() {
+private static int getInitialCounter() {
         int lines = 0;
+        
         try {
-            Scanner scan = new Scanner(new java.io.File("Library.csv"));
-            while (scan.hasNextLine()) {
-                scan.nextLine();
+            File f = new File(USER_FILE);
+            if (!f.exists()) return 0;
+            Scanner sc = new Scanner(f);
+            while (sc.hasNextLine()) {
+                sc.nextLine();
                 lines++;
             }
-            scan.close();
+            sc.close();
         } catch (Exception e) {
-            e.printStackTrace();
+            System.out.println("ERROR: " + e.getMessage());
         }
         return lines ;
-    }
+}
 
-    public void CreateAccount(String username, String password) {
+
+public void CreateAccount(String username, String password) {
         this.username = username;
         this.password = password;
-        this.id=counter+1;
+        counter++;
+        this.id=counter;
         numOfUsers++;
         try {
-            Scanner scan = new Scanner(new java.io.File("Users.csv"));
-            while(scan.hasNextLine()){
-                String line = scan.nextLine();
-                String[] fields = line.split(",");
+            File f = new File(USER_FILE);
+              if (!f.exists()) f.createNewFile();
+ 
+            Scanner sc = new Scanner(f);
+            while(sc.hasNextLine()){
+              String[] fields = sc.nextLine().split(",");
                 if(fields.length > 0 && fields[0].equals(this.getUsername())){
                     System.out.println("Username already exists");
-                    scan.close();
+                    sc.close();
                     return;
                 }
             }
-            PrintWriter users = new PrintWriter(new FileWriter(new java.io.File("Users.csv"), true));
-            users.println( this.getUsername()+","+this.getPassword()+","+this.getId());
+            sc.close();
+            PrintWriter users = new PrintWriter(new FileWriter(f, true));
+            users.println( username +"," + password+ "," + id);
             users.close();
             System.out.println("Account created successfully.");
-        } catch (java.io.IOException e) {
-            System.out.println("An error occurred: " + e.getMessage());
+        } catch (IOException e) {
+            System.out.println("ERROR: " + e.getMessage());
         }
-    }
+}
 
-    public void login() {
+
+public void login() {
         if(this.loginstatus){
             System.out.println("You are already logged in");
             return;
         }
-        User user1 = new User(this.username, this.password);
         Scanner sc = new Scanner(System.in);
         System.out.println("Enter username:");
         String uname = sc.nextLine();
         System.out.println("Enter password:");
         String pass = sc.nextLine();
-        if (uname.equals(user1.username) && pass.equals(user1.password)) {
-            System.out.println("Login successful");
-            this.loginstatus=true;
-        } else {
-            System.out.println("Login failed");
-        }
-    }
 
-    public void logout() {
+             try {
+             File f = new File(USER_FILE);
+              if (!f.exists()) f.createNewFile();
+
+            Scanner file = new Scanner(f);
+            while (file.hasNextLine()) {
+                String line = file.nextLine();
+                String[] F = line.split(",");
+
+                if (F.length >= 3 && F[0].equals(uname) && F[1].equals(pass)) {
+                    this.username = uname;
+                    this.password = pass;
+                    this.id = Integer.parseInt(F[2]);
+                    this.loginstatus = true;
+                    System.out.println("Login successful.");
+                    file.close();
+                    return;
+                }
+            }
+            file.close();
+        } catch (Exception e) {
+          System.out.println("ERROR: " + e.getMessage());
+        }
+
+        System.out.println("Login failed.");
+}
+
+    
+public void logout() {
          if(!this.loginstatus){
             System.out.println("You are not logged in");
             return;
         }
         this.loginstatus=false;
-        System.out.println("User logged out successfully");
-    }
+        System.out.println("logged out successfully");
+}
 
-    public void updateAccount(String newUsername, String newPassword) {
-        User user1 = new User(this.username, this.password);
-        Scanner sc = new Scanner(System.in);
-        System.out.println("Enter username:");
-        String uname = sc.nextLine();
-        System.out.println("Enter password:");
-        String pass = sc.nextLine();
-        if (uname.equals(user1.username) && pass.equals(user1.password) && this.loginstatus==true ) {
-            this.username = newUsername;
-            this.password = newPassword;
-            System.out.println("Your Account updated successfully");
-        } else {
-            System.out.println("Account update failed");
+
+public void updateAccount(String newUsername, String newPassword) {
+          if (!this.loginstatus) {
+            System.out.println("You must log in first");
+            return;
+        }
+         try {
+            File f = new File(USER_FILE);
+            if (!f.exists()) f.createNewFile();
+
+            Scanner sc = new Scanner(f);
+            List<String> lines = new ArrayList<>();
+
+            while (sc.hasNextLine()) {
+                String line = sc.nextLine();
+                String[] F = line.split(",");
+
+                if (F.length >= 3 && F[2].equals(String.valueOf(this.id))) {
+                    line = newUsername + "," + newPassword + "," + this.id;
+                    this.username = newUsername;
+                    this.password = newPassword;
+                }
+                lines.add(line);
+            }
+            sc.close();
+
+            PrintWriter pw = new PrintWriter(new FileWriter(f));
+            for (String l : lines) pw.println(l);
+            pw.close();
+
+            System.out.println("Account updated successfully.");
+
+        } catch (Exception e) {
+            System.out.println("Error updating account");
         }
     }
 
-    public void deleteAccount() {
-        User user1 = new User(this.username, this.password);
-        Scanner sc = new Scanner(System.in);
-        System.out.println("Enter username:");
-        String uname = sc.nextLine();
-        System.out.println("Enter password:");
-        String pass = sc.nextLine();
-        if (uname.equals(user1.username) && pass.equals(user1.password) && this.loginstatus==true) {
+
+public void deleteAccount() {
+        if (!this.loginstatus) {
+            System.out.println("You must log in first");
+            return;
+        }
+
+        try {
+            File f = new File(USER_FILE);
+            Scanner sc = new Scanner(f);
+            List<String> lines = new ArrayList<>();
+
+            while (sc.hasNextLine()) {
+                String line = sc.nextLine();
+                String[] F = line.split(",");
+
+                if (F.length >= 3 && F[2].equals(String.valueOf(this.id))) {
+                    continue; 
+                }
+                lines.add(line);
+            }
+            sc.close();
+            
+    
+            PrintWriter pw = new PrintWriter(new FileWriter(f));
+            for (String l : lines) pw.println(l);
+            pw.close();
+
             this.username = null;
             this.password = null;
-            User.numOfUsers--;
-            this.id=-1;
-            this.loginstatus=false;
-            System.out.println("Your Account deleted successfully");
-        } else {
-            System.out.println("Account deletion failed");
+            this.id = -1;
+            this.loginstatus = false;
+            numOfUsers--;
+            
+            System.out.println("Account deleted successfully.");
+
+        } catch (Exception e) {
+            System.out.println("Error deleting account");
         }
     }
 }
+
+
