@@ -2,22 +2,22 @@ import java.io.*;
 import java.util.*;
 
 public class Admin extends User {
-private static final File USER_FILE = new File("Users.csv");
-private static final File BOOK_FILE = new File("Library.csv"); 
+    private static final File USER_FILE = new File("Users.csv");
+    private static final File BOOK_FILE = new File("Library.csv");
 
-public Admin() { 
+    public Admin() {
         super();
         this.setAccountType(AccountType.ADMIN);
-}
+    }
 
-public Admin(String username, String password) {
+    public Admin(String username, String password) {
         super(username, password);
         this.setAccountType(AccountType.ADMIN);
-}
+    }
 
 
-public User searchbyID(int id) {
-        try {    
+    public User searchbyID(int id) {
+        try {
             if (!USER_FILE.exists()) {
                 System.out.println("User file does not exist.");
                 return null;
@@ -49,10 +49,10 @@ public User searchbyID(int id) {
             System.out.println("Error: " + e.getMessage());
         }
         return null;
-}
+    }
 
 
-public void updatebyID(int id) {
+    public void updatebyID(int id) {
         try {
             File file = USER_FILE;
             if (!file.exists()) {
@@ -76,7 +76,7 @@ public void updatebyID(int id) {
                     System.out.println("Enter new password:");
                     String newPass = input.nextLine();
                     String type = F.length >= 4 ? F[3] : "PATRON";
-                    line = newUname + "," + newPass + "," + F[2] + "," + type; 
+                    line = newUname + "," + newPass + "," + F[2] + "," + type;
                     System.out.println("User updated successfully.");
                 }
 
@@ -89,7 +89,7 @@ public void updatebyID(int id) {
                 return;
             }
 
-    
+
             PrintWriter pw = new PrintWriter(new FileWriter(file));
             for (String l : lines) pw.println(l);
             pw.close();
@@ -97,10 +97,10 @@ public void updatebyID(int id) {
         } catch (Exception e) {
             System.out.println("Error updating user: " + e.getMessage());
         }
-}
+    }
 
 
-public void deletebyID(int id) {
+    public void deletebyID(int id) {
         try {
             File file = USER_FILE;
             if (!file.exists()) {
@@ -117,7 +117,7 @@ public void deletebyID(int id) {
                 String[] F = line.split(",");
 
                 if (F.length >= 3 && Integer.parseInt(F[2]) == id) {
-                    found = true; 
+                    found = true;
                     continue;
                 }
                 lines.add(line);
@@ -140,7 +140,7 @@ public void deletebyID(int id) {
         }
     }
 
-public void addBook(Book book) {
+    public void addBook(Book book) {
         try {
             File file = BOOK_FILE;
             if (!file.exists()) file.createNewFile();
@@ -149,8 +149,8 @@ public void addBook(Book book) {
             book.setBookId(nextId);
             PrintWriter pw = new PrintWriter(new FileWriter(file, true));
             pw.println(nextId + "," + book.getBookName() + "," + book.getPublishingHouse() + "," +
-                       book.getAuther() + "," + book.getDateOfPublication() + "," + book.getGenre() + "," +
-                       book.getBookDiscription());
+                    book.getAuther() + "," + book.getDateOfPublication() + "," + book.getGenre() + "," +
+                    book.getBookDiscription());
             pw.close();
 
             System.out.println("Book added successfully.");
@@ -159,9 +159,9 @@ public void addBook(Book book) {
             System.out.println("Error adding book: " + e.getMessage());
         }
     }
- 
- 
- public void removeBookByID(int bookId) {
+
+
+    public void removeBookByID(int bookId) {
         try {
             File file = BOOK_FILE;
             if (!file.exists()) {
@@ -178,7 +178,7 @@ public void addBook(Book book) {
                 String[] F = line.split(",");
 
                 if (F.length >= 7 && Integer.parseInt(F[0]) == bookId) {
-                    found = true; 
+                    found = true;
                     continue;
                 }
                 lines.add(line);
@@ -199,9 +199,9 @@ public void addBook(Book book) {
         } catch (Exception e) {
             System.out.println("Error removing book: " + e.getMessage());
         }
-    }   
+    }
 
-public void updateBookByID(int bookId, Book updatedBook) {
+    public void updateBookByID(int bookId, Book updatedBook) {
         try {
             File file = BOOK_FILE;
             if (!file.exists()) {
@@ -220,9 +220,9 @@ public void updateBookByID(int bookId, Book updatedBook) {
                 if (F.length >= 7 && Integer.parseInt(F[0]) == bookId) {
                     found = true;
                     line = bookId + "," + updatedBook.getBookName() + "," +
-                           updatedBook.getPublishingHouse() + "," + updatedBook.getAuther() + "," +
-                           updatedBook.getDateOfPublication() + "," + updatedBook.getGenre() + "," +
-                           updatedBook.getBookDiscription();
+                            updatedBook.getPublishingHouse() + "," + updatedBook.getAuther() + "," +
+                            updatedBook.getDateOfPublication() + "," + updatedBook.getGenre() + "," +
+                            updatedBook.getBookDiscription();
                 }
                 lines.add(line);
             }
@@ -242,9 +242,9 @@ public void updateBookByID(int bookId, Book updatedBook) {
         } catch (Exception e) {
             System.out.println("Error updating book: " + e.getMessage());
         }
-    }    
+    }
 
-private int getNextBookId() {
+    private int getNextBookId() {
         int maxId = 0;
         try {
             if (!BOOK_FILE.exists()) return 1;
@@ -264,10 +264,10 @@ private int getNextBookId() {
             System.out.println("ERROR: " + e.getMessage());
         }
         return maxId + 1;
-}
+    }
 
-public BookStatus trackBook(Book book) {
+    public BookStatus trackBook(Book book) {
         return book.getStatus();
-}
+    }
 
 }
