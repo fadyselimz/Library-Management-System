@@ -23,7 +23,7 @@ public class Book {
         this.dateOfPublication = dateOfPublication.toString();
         this.genre = genre.toString();
         this.bookDiscription = bookDiscription;
-        this.bookId = getNextId();
+        this.bookId = getInitialCounter();
         counter = this.bookId;
     }
 
@@ -103,29 +103,8 @@ public class Book {
         } catch (Exception e) {
             System.out.println("ERROR: " + e.getMessage());
         }
-        return maxId ;
+        return maxId+1 ;
     }
 
-    private static int getNextId() {
-        int maxId = 0;
-        try {
-            java.io.File file = new java.io.File("Library.csv");
-            if (!file.exists()) return 1;
-            Scanner scan = new Scanner(file);
-            while (scan.hasNextLine()) {
-                String line = scan.nextLine();
-                String[] fields = line.split(",");
-                if (fields.length >= 1) {
-                    try {
-                        int idVal = Integer.parseInt(fields[0].trim());
-                        if (idVal > maxId) maxId = idVal;
-                    } catch (NumberFormatException ignored) { }
-                }
-            }
-            scan.close();
-        } catch (Exception e) {
-            System.out.println("ERROR: " + e.getMessage());
-        }
-        return maxId + 1;
-    }
+
 }

@@ -117,7 +117,7 @@ public void deletebyID(int id) {
                 String[] F = line.split(",");
 
                 if (F.length >= 3 && Integer.parseInt(F[2]) == id) {
-                    found = true; // skip this line → delete
+                    found = true; 
                     continue;
                 }
                 lines.add(line);
@@ -129,7 +129,6 @@ public void deletebyID(int id) {
                 return;
             }
 
-            // Overwrite the file without the deleted user
             PrintWriter pw = new PrintWriter(new FileWriter(file));
             for (String l : lines) pw.println(l);
             pw.close();

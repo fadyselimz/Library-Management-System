@@ -41,7 +41,7 @@ private static int getInitialCounter() {
             while (sc.hasNextLine()) {
                 String line = sc.nextLine();
                 String[] fields = line.split(",");
-                if (fields.length >= 3) {
+                if (fields.length >= 4) {
                     try {
                         int idVal = Integer.parseInt(fields[2].trim());
                         if (idVal > maxId) maxId = idVal;
@@ -190,7 +190,7 @@ public void deleteAccount() {
 
             this.username = null;
             this.password = null;
-            this.id = -1;
+            this.id = -2;
             this.loginstatus = false;
             numOfUsers--;
             
