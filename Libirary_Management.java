@@ -118,9 +118,9 @@ public class Libirary_Management {
         }
         return foundBooks;
     }
-    // public static String viewBook(String title ){
-    // return "";
-    // }
+    public static String viewBook(Book book ){
+    return book.toString();
+    }
     // public static Boolean checkBook(String title){} 
     // public static Boolean checkBook(int id ){}
 
