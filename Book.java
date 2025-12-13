@@ -14,8 +14,6 @@ public class Book {
     public Book() {
     }
 
-    
-
     public Book(String bookName, String publishingHouse, String autherName, Date dateOfPublication, Genre genre, String bookDiscription) {
         this.bookName = bookName;
         this.publishingHouse = publishingHouse;
@@ -45,7 +43,7 @@ public class Book {
         this.autherName=autherName;
     }
     public String getAuther(){
-       return autherName; 
+        return autherName;
     }
     public void setDateOfPublication(String dateOfPublication){
         this.dateOfPublication=dateOfPublication;
@@ -68,7 +66,7 @@ public class Book {
     public void setBookId(int bookId){
         this.bookId=bookId;
     }
-    public int getbookId(){
+    public int getBookId(){
         return bookId;
     }
     public BookStatus getStatus() {

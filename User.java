@@ -33,7 +33,7 @@ public abstract  class User{
     public void setAccountType(AccountType accountType) {this.accountType = accountType;}
 
 
-private static int getInitialCounter() {
+    private static int getInitialCounter() {
         int maxId = 0;
         try {
             if (!USERS_FILE.exists()) return 1;
@@ -53,10 +53,9 @@ private static int getInitialCounter() {
             System.out.println("ERROR: " + e.getMessage());
         }
         return maxId + 1;
-}
+    }
 
-
-public void CreateAccount(String username, String password) {
+    public void CreateAccount(String username, String password) {
         this.username = username;
         this.password = password;
         this.id= getInitialCounter();
@@ -64,7 +63,7 @@ public void CreateAccount(String username, String password) {
         try {
             Scanner sc = new Scanner(USERS_FILE);
             while(sc.hasNextLine()){
-              String[] fields = sc.nextLine().split(",");
+                String[] fields = sc.nextLine().split(",");
                 if(fields.length > 0 && fields[0].equals(this.getUsername())){
                     System.out.println("Username already exists");
                     sc.close();
@@ -79,10 +78,10 @@ public void CreateAccount(String username, String password) {
         } catch (IOException e) {
             System.out.println("ERROR: " + e.getMessage());
         }
-}
+    }
 
 
-public void login() {
+    public void login() {
         if(this.loginstatus){
             System.out.println("You are already logged in");
             return;
@@ -93,7 +92,7 @@ public void login() {
         System.out.println("Enter password:");
         String pass = sc.nextLine();
 
-             try {
+        try {
             Scanner file = new Scanner(USERS_FILE);
             while (file.hasNextLine()) {
                 String line = file.nextLine();
@@ -111,29 +110,63 @@ public void login() {
             }
             file.close();
         } catch (Exception e) {
-          System.out.println("ERROR: " + e.getMessage());
+            System.out.println("ERROR: " + e.getMessage());
         }
 
         System.out.println("Login failed.");
-}
+    }
+    public boolean login(String uname, String pass) {
 
-    
-public void logout() {
-         if(!this.loginstatus){
+        if (this.loginstatus) {
+            return true;
+        }
+
+        try {
+            Scanner file = new Scanner(USERS_FILE);
+
+            while (file.hasNextLine()) {
+                String line = file.nextLine();
+                String[] fields = line.split(",");
+
+                if (fields.length >= 4 &&
+                        fields[0].equals(uname) &&
+                        fields[1].equals(pass)) {
+
+                    this.username = fields[0];
+                    this.password = fields[1];
+                    this.id = Integer.parseInt(fields[2]);
+                    this.accountType = AccountType.valueOf(fields[3]);
+                    this.loginstatus = true;
+
+                    file.close();
+                    return true;
+                }
+            }
+            file.close();
+
+        } catch (Exception e) {
+            System.out.println("ERROR: " + e.getMessage());
+        }
+
+        return false;
+    }
+
+    public void logout() {
+        if(!this.loginstatus){
             System.out.println("You are not logged in");
             return;
         }
         this.loginstatus=false;
         System.out.println("logged out successfully");
-}
+    }
 
 
-public void updateAccount(String newUsername, String newPassword) {
-          if (!this.loginstatus) {
+    public void updateAccount(String newUsername, String newPassword) {
+        if (!this.loginstatus) {
             System.out.println("You must log in first");
             return;
         }
-         try {
+        try {
             Scanner sc = new Scanner(USERS_FILE);
             List<String> lines = new ArrayList<>();
 
@@ -162,7 +195,7 @@ public void updateAccount(String newUsername, String newPassword) {
     }
 
 
-public void deleteAccount() {
+    public void deleteAccount() {
         if (!this.loginstatus) {
             System.out.println("You must log in first");
             return;
@@ -177,13 +210,13 @@ public void deleteAccount() {
                 String[] F = line.split(",");
 
                 if (F.length >= 3 && F[2].equals(String.valueOf(this.id))) {
-                    continue; 
+                    continue;
                 }
                 lines.add(line);
             }
             sc.close();
-            
-    
+
+
             PrintWriter pw = new PrintWriter(new FileWriter(USERS_FILE));
             for (String l : lines) pw.println(l);
             pw.close();
@@ -193,13 +226,13 @@ public void deleteAccount() {
             this.id = -2;
             this.loginstatus = false;
             numOfUsers--;
-            
+
             System.out.println("Account deleted successfully.");
 
         } catch (Exception e) {
             System.out.println("Error deleting account");
         }
+
     }
 }
-
 
