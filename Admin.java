@@ -2,32 +2,45 @@ import java.io.*;
 import java.util.*;
 
 public class Admin extends User {
-private static final String USER_FILE = "Users.csv";
-private static final String BOOK_FILE = "Library.csv"; 
+private static final File USER_FILE = new File("Users.csv");
+private static final File BOOK_FILE = new File("Library.csv"); 
 
-public Admin() { }
+public Admin() { 
+        super();
+        this.setAccountType(AccountType.ADMIN);
+}
 
 public Admin(String username, String password) {
         super(username, password);
+        this.setAccountType(AccountType.ADMIN);
 }
 
 
 public User searchbyID(int id) {
-        try {
-            File f = new File(USER_FILE);
-            if (!f.exists()) {
+        try {    
+            if (!USER_FILE.exists()) {
                 System.out.println("User file does not exist.");
                 return null;
             }
 
-            Scanner sc = new Scanner(f);
+            Scanner sc = new Scanner(USER_FILE);
             while (sc.hasNextLine()) {
                 String line = sc.nextLine();
                 String[] F = line.split(",");
                 if (F.length >= 3 && Integer.parseInt(F[2]) == id) {
-                    System.out.println("User found: " + F[0] + ", Password: " + F[1]);
+                    String type = F.length >= 4 ? F[3] : "PATRON";
+                    System.out.println("User found: " + F[0] + ", Password: " + F[1] + " ID: " + F[2] + ", AccountType: " + type);
+                    User u;
+                    if("ADMIN".equals(type)){
+                        u = new Admin(F[0], F[1]);
+                    } else if("LIBRARIAN".equals(type)){
+                        u = new Librarian(F[0], F[1]);
+                    } else {
+                        u = new Patron(F[0], F[1]);
+                    }
+                    u.setId(Integer.parseInt(F[2]));
                     sc.close();
-                    return new User(F[0], F[1]); 
+                    return u;
                 }
             }
             sc.close();
@@ -41,13 +54,13 @@ public User searchbyID(int id) {
 
 public void updatebyID(int id) {
         try {
-            File f = new File(USER_FILE);
-            if (!f.exists()) {
+            File file = USER_FILE;
+            if (!file.exists()) {
                 System.out.println("User file does not exist.");
                 return;
             }
 
-            Scanner sc = new Scanner(f);
+            Scanner sc = new Scanner(file);
             List<String> lines = new ArrayList<>();
             boolean found = false;
 
@@ -62,7 +75,8 @@ public void updatebyID(int id) {
                     String newUname = input.nextLine();
                     System.out.println("Enter new password:");
                     String newPass = input.nextLine();
-                    line = newUname + "," + newPass + "," + F[2]; 
+                    String type = F.length >= 4 ? F[3] : "PATRON";
+                    line = newUname + "," + newPass + "," + F[2] + "," + type; 
                     System.out.println("User updated successfully.");
                 }
 
@@ -76,7 +90,7 @@ public void updatebyID(int id) {
             }
 
     
-            PrintWriter pw = new PrintWriter(new FileWriter(f));
+            PrintWriter pw = new PrintWriter(new FileWriter(file));
             for (String l : lines) pw.println(l);
             pw.close();
 
@@ -88,13 +102,13 @@ public void updatebyID(int id) {
 
 public void deletebyID(int id) {
         try {
-            File f = new File(USER_FILE);
-            if (!f.exists()) {
+            File file = USER_FILE;
+            if (!file.exists()) {
                 System.out.println("User file does not exist.");
                 return;
             }
 
-            Scanner sc = new Scanner(f);
+            Scanner sc = new Scanner(file);
             List<String> lines = new ArrayList<>();
             boolean found = false;
 
@@ -116,7 +130,7 @@ public void deletebyID(int id) {
             }
 
             // Overwrite the file without the deleted user
-            PrintWriter pw = new PrintWriter(new FileWriter(f));
+            PrintWriter pw = new PrintWriter(new FileWriter(file));
             for (String l : lines) pw.println(l);
             pw.close();
 
@@ -129,13 +143,15 @@ public void deletebyID(int id) {
 
 public void addBook(Book book) {
         try {
-            File f = new File(BOOK_FILE);
-            if (!f.exists()) f.createNewFile();
+            File file = BOOK_FILE;
+            if (!file.exists()) file.createNewFile();
 
-            PrintWriter pw = new PrintWriter(new FileWriter(f, true));
-            pw.println(book.getBookName() + "," + book.getAuther() + "," + book.getPublishingHouse() + "," +
-                       book.getDateOfPublication() + "," + book.getGenre() + "," + book.getBookDiscription() + "," +
-                       book.getbookId() + "," + book.getStatus());
+            int nextId = getNextBookId();
+            book.setBookId(nextId);
+            PrintWriter pw = new PrintWriter(new FileWriter(file, true));
+            pw.println(nextId + "," + book.getBookName() + "," + book.getPublishingHouse() + "," +
+                       book.getAuther() + "," + book.getDateOfPublication() + "," + book.getGenre() + "," +
+                       book.getBookDiscription());
             pw.close();
 
             System.out.println("Book added successfully.");
@@ -148,13 +164,13 @@ public void addBook(Book book) {
  
  public void removeBookByID(int bookId) {
         try {
-            File f = new File(BOOK_FILE);
-            if (!f.exists()) {
+            File file = BOOK_FILE;
+            if (!file.exists()) {
                 System.out.println("Book file does not exist.");
                 return;
             }
 
-            Scanner sc = new Scanner(f);
+            Scanner sc = new Scanner(file);
             List<String> lines = new ArrayList<>();
             boolean found = false;
 
@@ -175,7 +191,7 @@ public void addBook(Book book) {
                 return;
             }
 
-            PrintWriter pw = new PrintWriter(new FileWriter(f));
+            PrintWriter pw = new PrintWriter(new FileWriter(file));
             for (String l : lines) pw.println(l);
             pw.close();
 
@@ -188,13 +204,13 @@ public void addBook(Book book) {
 
 public void updateBookByID(int bookId, Book updatedBook) {
         try {
-            File f = new File(BOOK_FILE);
-            if (!f.exists()) {
+            File file = BOOK_FILE;
+            if (!file.exists()) {
                 System.out.println("Book file does not exist.");
                 return;
             }
 
-            Scanner sc = new Scanner(f);
+            Scanner sc = new Scanner(file);
             List<String> lines = new ArrayList<>();
             boolean found = false;
 
@@ -204,10 +220,10 @@ public void updateBookByID(int bookId, Book updatedBook) {
 
                 if (F.length >= 7 && Integer.parseInt(F[0]) == bookId) {
                     found = true;
-                    line = updatedBook.getBookName() + "," + updatedBook.getAuther() + "," +
-                           updatedBook.getPublishingHouse() + "," + updatedBook.getDateOfPublication() + "," +
-                           updatedBook.getGenre() + "," + updatedBook.getBookDiscription() + "," +
-                           updatedBook.getbookId() + "," + updatedBook.getStatus();
+                    line = bookId + "," + updatedBook.getBookName() + "," +
+                           updatedBook.getPublishingHouse() + "," + updatedBook.getAuther() + "," +
+                           updatedBook.getDateOfPublication() + "," + updatedBook.getGenre() + "," +
+                           updatedBook.getBookDiscription();
                 }
                 lines.add(line);
             }
@@ -218,7 +234,7 @@ public void updateBookByID(int bookId, Book updatedBook) {
                 return;
             }
 
-            PrintWriter pw = new PrintWriter(new FileWriter(f));
+            PrintWriter pw = new PrintWriter(new FileWriter(file));
             for (String l : lines) pw.println(l);
             pw.close();
 
@@ -228,4 +244,31 @@ public void updateBookByID(int bookId, Book updatedBook) {
             System.out.println("Error updating book: " + e.getMessage());
         }
     }    
+
+private int getNextBookId() {
+        int maxId = 0;
+        try {
+            if (!BOOK_FILE.exists()) return 1;
+            Scanner sc = new Scanner(BOOK_FILE);
+            while (sc.hasNextLine()) {
+                String line = sc.nextLine();
+                String[] fields = line.split(",");
+                if (fields.length >= 1) {
+                    try {
+                        int idVal = Integer.parseInt(fields[0].trim());
+                        if (idVal > maxId) maxId = idVal;
+                    } catch (NumberFormatException ignored) { }
+                }
+            }
+            sc.close();
+        } catch (Exception e) {
+            System.out.println("ERROR: " + e.getMessage());
+        }
+        return maxId + 1;
+}
+
+public BookStatus trackBook(Book book) {
+        return book.getStatus();
+}
+
 }
