@@ -67,7 +67,7 @@ public class User{
             }
             scan.close();
         } catch (Exception e) {
-
+            e.printStackTrace();
         }
         return lines ;
     }

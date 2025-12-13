@@ -24,7 +24,7 @@ public class Libirary_Management {
         System.out.println("Book added to the library successfully.");
     }
 
-    public static Book searchBook(String title) throws FileNotFoundException {
+    public static String searchBook(String title) throws FileNotFoundException {
         Scanner scan = new Scanner(file);
         while(scan.hasNextLine()){
             String line = scan.nextLine();
@@ -39,24 +39,85 @@ public class Libirary_Management {
                 book.setGenre(fields[5]);
                 book.setBookDiscription(fields[6]);
                 scan.close();
-                return book;
+                return book.toString();
             }
         }
         scan.close();
         return null;
     }
 
-    // public static String searchBook(int id){
-    //     for (Book book : books) {
-    //         if (book.getbookId() == id) {
-    //             return book.getBookName();
-    //         }
-    //     }
-    //     return null;
-    // }
-    // public static Book[] searchGenre(Genre genre){}
-    // public static Book[] searchAuthor(String author){}
-    // public static Book[] searchPublishHouse(String publishHouse){}
+    public static String searchBook(int id) throws FileNotFoundException {
+        Scanner scan = new Scanner(file);
+        while(scan.hasNextLine()){
+            String line = scan.nextLine();
+            String[] fields = line.split(",");
+            if(fields.length > 0 && (Integer.parseInt( fields[0]))== id){
+                Book book = new Book();
+                book.setBookId(Integer.parseInt(fields[0]));
+                book.setBookName(fields[1]);
+                book.setPublishingHouse(fields[2]);
+                book.setAuther(fields[3]);
+                book.setDateOfPublication(fields[4]);
+                book.setGenre(fields[5]);
+                book.setBookDiscription(fields[6]);
+                scan.close();
+                return book.toString();
+            }
+        }
+        scan.close();
+        return null;
+    }
+    public static List<String> searchGenre(Genre genre){
+        List<String> foundBooks = new ArrayList<>();
+        try {
+            Scanner scan = new Scanner(file);
+            while(scan.hasNextLine()){
+                String line = scan.nextLine();
+                String[] fields = line.split(",");
+                if(fields.length > 5 && fields[5].equalsIgnoreCase(genre.toString())){
+                    foundBooks.add(line);
+                }
+            }
+            scan.close();
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        }
+        return foundBooks;
+    }
+    public static List<String> searchAuthor(String author){
+        List<String> foundBooks = new ArrayList<>();
+        try {
+            Scanner scan = new Scanner(file);
+            while(scan.hasNextLine()){
+                String line = scan.nextLine();
+                String[] fields = line.split(",");
+                if(fields.length > 3 && fields[3].equalsIgnoreCase(author)){
+                    foundBooks.add(line);
+                }
+            }
+            scan.close();
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        }
+        return foundBooks;
+    }
+    public static List<String> searchPublishHouse(String publishHouse){
+        List<String> foundBooks = new ArrayList<>();
+        try {
+            Scanner scan = new Scanner(file);
+            while(scan.hasNextLine()){
+                String line = scan.nextLine();
+                String[] fields = line.split(",");
+                if(fields.length > 2 && fields[2].equalsIgnoreCase(publishHouse)){
+                    foundBooks.add(line);
+                }
+            }
+            scan.close();
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        }
+        return foundBooks;
+    }
     // public static String viewBook(String title ){
     // return "";
     // }
