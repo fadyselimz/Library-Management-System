@@ -1,21 +1,20 @@
 import java.io.*;
 import java.util.*;
 
-public class User{
+public abstract  class User{
     private String username;
     private String password;
     private int id ;
-    private  static int counter=getInitialCounter();
     private  static int numOfUsers=0;
     private boolean loginstatus=false;
-    private static final String USER_FILE = "Users.csv";
-
+    private AccountType accountType;
+    private static final File USERS_FILE = new File("Users.csv");
     public User() {
     }
 
     public User(String username, String password) {
         this.username = username;
-        this.password = password; 
+        this.password = password;
     }
 
     public String getUsername() { return username; }
@@ -27,43 +26,43 @@ public class User{
     public int getId() { return id;}
     public void setId(int ID) {id= ID;}
 
-    public static  int getCounter() {return counter;}
-    public static void  setCounter(int Counter) {counter = Counter;}
-
     public static int getNumOfUsers() {return numOfUsers;}
     public static void setNumOfUsers(int NumOfUsers) {numOfUsers= NumOfUsers;}
 
+    public  AccountType getAccountType() {return this.accountType;}
+    public void setAccountType(AccountType accountType) {this.accountType = accountType;}
+
 
 private static int getInitialCounter() {
-        int lines = 0;
-        
+        int maxId = 0;
         try {
-            File f = new File(USER_FILE);
-            if (!f.exists()) return 0;
-            Scanner sc = new Scanner(f);
+            if (!USERS_FILE.exists()) return 1;
+            Scanner sc = new Scanner(USERS_FILE);
             while (sc.hasNextLine()) {
-                sc.nextLine();
-                lines++;
+                String line = sc.nextLine();
+                String[] fields = line.split(",");
+                if (fields.length >= 3) {
+                    try {
+                        int idVal = Integer.parseInt(fields[2].trim());
+                        if (idVal > maxId) maxId = idVal;
+                    } catch (NumberFormatException ignored) { }
+                }
             }
             sc.close();
         } catch (Exception e) {
             System.out.println("ERROR: " + e.getMessage());
         }
-        return lines ;
+        return maxId + 1;
 }
 
 
 public void CreateAccount(String username, String password) {
         this.username = username;
         this.password = password;
-        counter++;
-        this.id=counter;
+        this.id= getInitialCounter();
         numOfUsers++;
         try {
-            File f = new File(USER_FILE);
-              if (!f.exists()) f.createNewFile();
- 
-            Scanner sc = new Scanner(f);
+            Scanner sc = new Scanner(USERS_FILE);
             while(sc.hasNextLine()){
               String[] fields = sc.nextLine().split(",");
                 if(fields.length > 0 && fields[0].equals(this.getUsername())){
@@ -73,8 +72,8 @@ public void CreateAccount(String username, String password) {
                 }
             }
             sc.close();
-            PrintWriter users = new PrintWriter(new FileWriter(f, true));
-            users.println( username +"," + password+ "," + id);
+            PrintWriter users = new PrintWriter(new FileWriter(USERS_FILE, true));
+            users.println( username +"," + password+ "," + id + "," + accountType);
             users.close();
             System.out.println("Account created successfully.");
         } catch (IOException e) {
@@ -95,10 +94,7 @@ public void login() {
         String pass = sc.nextLine();
 
              try {
-             File f = new File(USER_FILE);
-              if (!f.exists()) f.createNewFile();
-
-            Scanner file = new Scanner(f);
+            Scanner file = new Scanner(USERS_FILE);
             while (file.hasNextLine()) {
                 String line = file.nextLine();
                 String[] F = line.split(",");
@@ -138,10 +134,7 @@ public void updateAccount(String newUsername, String newPassword) {
             return;
         }
          try {
-            File f = new File(USER_FILE);
-            if (!f.exists()) f.createNewFile();
-
-            Scanner sc = new Scanner(f);
+            Scanner sc = new Scanner(USERS_FILE);
             List<String> lines = new ArrayList<>();
 
             while (sc.hasNextLine()) {
@@ -157,7 +150,7 @@ public void updateAccount(String newUsername, String newPassword) {
             }
             sc.close();
 
-            PrintWriter pw = new PrintWriter(new FileWriter(f));
+            PrintWriter pw = new PrintWriter(new FileWriter(USERS_FILE));
             for (String l : lines) pw.println(l);
             pw.close();
 
@@ -176,8 +169,7 @@ public void deleteAccount() {
         }
 
         try {
-            File f = new File(USER_FILE);
-            Scanner sc = new Scanner(f);
+            Scanner sc = new Scanner(USERS_FILE);
             List<String> lines = new ArrayList<>();
 
             while (sc.hasNextLine()) {
@@ -192,7 +184,7 @@ public void deleteAccount() {
             sc.close();
             
     
-            PrintWriter pw = new PrintWriter(new FileWriter(f));
+            PrintWriter pw = new PrintWriter(new FileWriter(USERS_FILE));
             for (String l : lines) pw.println(l);
             pw.close();
 

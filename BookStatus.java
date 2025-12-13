@@ -1,6 +1,5 @@
 public enum  BookStatus {
     AVAILABLE, 
-    CHECKOUT,
-    RESERVED,
-    NOTAVAILABLE
+    CHECKED_OUT,
+    RESERVED
 }

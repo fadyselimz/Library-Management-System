@@ -1,8 +1,24 @@
 public class main {
     public static void main(String[] args) {
         try {
-            Admin admin = new Admin("admin", "adminpass");
-            admin.removeBookByID(2);
+   
+        Admin admin1 = new Admin();
+        admin1.CreateAccount("first", "adminPass");
+        admin1.CreateAccount("second", "fady");
+        Patron patron1 = new Patron();
+        patron1.CreateAccount("third", "patronPass2");
+        Librarian librarian1 = new Librarian();
+        librarian1.CreateAccount("fourth", "librarianPass");
+         
+ patron1.CreateAccount("fifth", "patronPass2");
+
+        librarian1.CreateAccount("sixth", "librarianPass");
+        
+     patron1.CreateAccount("seventh", "patronPass2");
+
+ 
+
+           
 
             // Book book=new Book();
             // book=Libirary_Management.searchBook("1984");
